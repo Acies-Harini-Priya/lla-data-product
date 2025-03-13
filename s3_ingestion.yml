@@ -1,0 +1,62 @@
+version: v1
+name: ingestion-transaction-lla
+type: workflow
+tags:
+  - ingestion-transaction-lla # to find this ingestion in metis
+description: This job read data from to postgres
+title: Read Postgres
+workflow:
+  dag:
+    - name: ingestion-transaction-lla
+      title: Read Postgres
+      description: This job read data from postgres
+      spec:
+        tags:
+          - ingestion-transaction-lla
+        stack: flare:5.0
+        compute: runnable-default
+
+        stackSpec:
+          job:
+            explain: true
+
+            inputs:
+              - name: modem_performance_data
+                dataset: dataos://s3lladepot:public/modem_performance?acl=rw # once the depot cmd is run successfully, search for this depotname in metis to find this link
+                options:
+                  driver: org.postgresql.Driver # default driver for postrges
+            logLevel: INFO
+          
+            outputs:
+              - name: output
+                dataset: dataos://lakehouse:sru/transaction_data  # Here we are using already created lakehouse, but in real-time create a lakehouse and get this link from metis
+                format: Iceberg
+                options:
+                  saveMode: overwrite
+                description: Data set from blender
+                tags:
+                  - Connect
+                title: Postgres Dataset
+
+            steps:
+              - sequence:
+                  - name: output # name in outputs (where we point to the lakehouse -> dataset is going to be stored in this location) 
+                    sql: 
+                      SELECT 
+                          CAST(to_timestamp(timestamp, 'M/d/yyyy H:mm') AS TIMESTAMP) as timestamp,
+                          modem_id,
+                          cast(CPU_Utilization as int) as cpu_utilization,
+                          cast(RAM_Utilization as int) as ram_utilization,
+                          cast(Flash_Write_Cycles as int) as flash_write_cycles,
+                          cast(Device_Internal_Temp as int) as  device_internal_temp,
+                          cast(Voltage_Adapter as double) as voltage_adapter,
+                          cast(Unexpected_Restarts as int) as unexpected_restarts,
+                          cast(Signal_Strength as int) as signal_strength,
+                          Error_Code as error_code
+                      from modem_performance_data 
+                    functions:
+                      - name: cleanse_column_names
+                      - name: change_column_case
+                        case: lower
+
+                    # From table has to be the name in inputs (where we point to the depot)
