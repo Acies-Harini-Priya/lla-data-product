@@ -1,18 +1,18 @@
 version: v1
-name: ingestion-masterdata-lla
+name: lla-ingestion-masterdata
 type: workflow
 tags:
-  - ingestion-masterdata-lla 
+  - lla-ingestion-masterdata
 description: This job read data from to postgres
 title: Read Postgres
 workflow:
   dag:
-    - name: ingestion-masterdata-lla
+    - name: lla-ingestion-masterdata
       title: Read Postgres
       description: This job read data from postgres
       spec:
         tags:
-          - ingestion-masterdata-lla
+          - lla-ingestion-masterdata
         stack: flare:5.0
         compute: runnable-default
 
