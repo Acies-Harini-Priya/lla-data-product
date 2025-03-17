@@ -1,6 +1,6 @@
 tables:
-  - name: performance_data
-    sql: {{ load_sql('performance_data') }}
+  - name: modem_performance_data
+    sql: {{ load_sql('modem_performance_data') }}
     description: Modem's performance Data
     public: true
 
