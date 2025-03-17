@@ -1,0 +1,46 @@
+name: consumption-layer-lens      
+version: v1alpha            
+layer: user                  
+type: lens                   
+tags:                       
+    - lens
+    - consumption-layer-lens   
+description: Lens for consumption layer
+
+lens:
+  compute: runnable-default 
+  secrets: 
+    - name: harini-secret-cl-r 
+      allKeys: true 
+
+        
+  source: 
+    type: minerva 
+    name: miniature 
+    catalog: lakehouse 
+  repo: 
+    url: https://github.com/Acies-Harini-Priya/lla-data-product/tree/main
+    lensBaseDir: lla-data-product
+    syncFlags: 
+      - --ref=main 
+
+  api:  
+    replicas: 1 
+    logLevel: info 
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1048Mi
+  worker: 
+    replicas: 1 
+    logLevel: debug 
+    resources: 
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1248Mi

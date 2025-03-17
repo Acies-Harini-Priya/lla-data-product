@@ -1,0 +1,73 @@
+tables:
+  - name: modem_performance_data
+    sql: {{ load_sql('modem_performance_data') }}
+    description: Modem's performance Data
+    public: true
+
+    dimensions:
+      - name: modem_id
+        type: string
+        column: modem_id
+        description: Unique id of modem
+
+      - name: timestamp
+        type: time
+        column: timestamp
+        description: Timestamp of modem logs
+
+      - name: combination
+        type: string
+        column: combination
+        description: Combination column of timestamp and modem_id
+        primary_key: true
+
+      - name: cpu_utilization
+        type: number
+        column: cpu_utilization
+        description: CPU utilization percentage
+
+      - name: ram_utilization
+        type: number
+        column: ram_utilization
+        description: RAM utilization percentage
+
+      - name: flash_write_cycles
+        type: number
+        column: flash_write_cycles
+        description: Flash memory write cycles 
+
+      - name: device_internal_temp
+        type: number
+        column: device_internal_temp
+        description: Device internal temperature in Celsius
+
+      - name: voltage_adapter
+        type: number
+        column: voltage_adapter
+        description: Voltage from adapter in Volts
+
+      - name: unexpected_restarts
+        type: number
+        column: unexpected_restarts
+        description: Count of unexpected device restarts
+
+      - name: signal_strength
+        type: number
+        column: signal_strength
+        description: Signal strength in dbm
+
+      - name: error_code
+        type: string
+        column: error_code
+        description: error_code of the modem which states the type of error
+
+    measures:
+      - name: unique_modems
+        type: count_distinct
+        sql: modem_id
+        description: Count of unique number of modems
+
+      - name: total_records
+        type: count
+        sql: timestamp
+        description: Total number of records in the dataset

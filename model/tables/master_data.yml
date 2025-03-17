@@ -1,0 +1,38 @@
+tables:
+  - name: master_data
+    sql: {{ load_sql('master_data') }}
+    description: master Data
+    public: true
+
+    joins:
+      - name: modem_performance_data
+        relationship: one_to_one
+        sql: "{TABLE.combination}={modem_performance_data.combination}" 
+
+    dimensions:
+      - name: timestamp
+        type: time    
+        column: timestamp
+        description: Timestamp of modem logs
+
+      - name: modem_id
+        type: string
+        column: modem_id
+        description: Unique id of modem
+
+      - name: combination
+        type: string
+        column: combination
+        description: Combination column of timestamp and modem_id
+        primary_key: true
+
+    measures:
+      - name: unique_modems
+        type: count_distinct
+        sql: modem_id
+        description: Count of unique number of modems
+
+      - name: total_records
+        type: count
+        sql: timestamp
+        description: Total number of records in the dataset
