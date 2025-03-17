@@ -1,10 +1,10 @@
-name: consumption-layer-lens      
+name: lens-consumption
 version: v1alpha            
 layer: user                  
 type: lens                   
 tags:                       
     - lens
-    - consumption-layer-lens   
+    - consumption-lens    
 description: Lens for consumption layer
 
 lens:
@@ -19,8 +19,8 @@ lens:
     name: miniature 
     catalog: lakehouse 
   repo: 
-    url: https://github.com/Acies-Harini-Priya/lla-data-product/tree/main
-    lensBaseDir: lla-data-product
+    url: https://github.com/Acies-Harini-Priya/lla-data-product # mention the url of the repo
+    lensBaseDir: lla-data-product/model # mention the exact folder
     syncFlags: 
       - --ref=main 
 
