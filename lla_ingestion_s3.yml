@@ -1,0 +1,65 @@
+# Data Ingestion
+version: v1
+name: lla-ingestion-s3
+type: workflow
+tags:
+  - modem performance data
+description: Ingesting data in lakehouse
+workflow:
+  dag:
+    - name: lla-ingestion-s3
+      description: The job ingests modem performance data from S3 into our lakehouse
+      spec:
+        tags:
+          - crm
+        stack: flare:6.0
+        compute: runnable-default
+        stackSpec:
+          driver:
+            coreLimit: 2000m
+            cores: 2
+            memory: 3000m
+          executor:
+            coreLimit: 3000m
+            cores: 2
+            instances: 2
+            memory: 4000m
+          job:
+            explain: true
+            inputs:
+              - name: modem_performance_data
+                dataset: dataos://modems3:none/modem_performance.csv?acl=rw
+                format: csv
+                options:
+                  inferSchema: true
+            logLevel: INFO
+            outputs:
+              - name: output
+                dataset: dataos://lakehouse:sru/modem_performance_data?acl=rw
+                format: Iceberg
+                options:
+                  saveMode: overwrite
+                  iceberg:
+                    properties:
+                      write.format.default: parquet
+                      write.metadata.compression-codec: gzip
+            steps:
+              - sequence:
+                  - name: output
+                    sql: >
+                      SELECT 
+                          timestamp,
+                          modem_id,
+                          cast(CPU_Utilization as int) as cpu_utilization,
+                          cast(RAM_Utilization as int) as ram_utilization,
+                          cast(Flash_Write_Cycles as int) as flash_write_cycles,
+                          cast(Device_Internal_Temp as int) as  device_internal_temp,
+                          cast(Voltage_Adapter as double) as voltage_adapter,
+                          cast(Unexpected_Restarts as int) as unexpected_restarts,
+                          cast(Signal_Strength as int) as signal_strength,
+                          Error_Code as error_code
+                      from modem_performance_data
+                    functions:
+                      - name: cleanse_column_names
+                      - name: change_column_case
+                        case: lower
