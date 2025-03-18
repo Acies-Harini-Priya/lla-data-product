@@ -1,4 +1,4 @@
-name: consumption-layer-lens-v2
+name: lens-consumption-layer-v2
 version: v1alpha            
 layer: user                  
 type: lens                   
