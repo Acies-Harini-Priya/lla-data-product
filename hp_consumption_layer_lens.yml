@@ -1,4 +1,4 @@
-name: lens-consumption-layer-hp
+name: hp-lens-consumption-layer
 version: v1alpha            
 layer: user                  
 type: lens                   

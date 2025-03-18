@@ -25,7 +25,7 @@ views:
         includes:
           - modem_id
 
-      - join_path: modem_prediction
+      - join_path: modem_prediction_data
         prefix: true
         includes:
           - failure_probability
